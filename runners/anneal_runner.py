@@ -262,6 +262,7 @@ class AnnealRunner:
                     wandb.log({"test_dsm_loss": test_dsm_loss.item(), "step": step})
 
                 if step % self.config.training.snapshot_freq == 0:
+                    logging.info(f"Running test at step {step}")
                     self.test(score, step)
                 #     states = [
                 #         score.state_dict(),
@@ -379,12 +380,13 @@ class AnnealRunner:
                     step,
                     os.path.join(self.args.image_folder, "image_{}.png".format(i)),
                 )
-                torch.save(
-                    sample,
-                    os.path.join(self.args.image_folder, "image_raw_{}.pth".format(i)),
-                )
+                # torch.save(
+                #     sample,
+                #     os.path.join(self.args.image_folder, "image_raw_{}.pth".format(i)),
+                # )
 
         else:
+            raise NotImplementedError
             samples = torch.rand(grid_size**2, 3, 32, 32, device=self.config.device)
 
             all_samples = self.anneal_Langevin_dynamics(
@@ -426,13 +428,13 @@ class AnnealRunner:
                     os.path.join(self.args.image_folder, "image_raw_{}.pth".format(i)),
                 )
 
-        imgs[0].save(
-            os.path.join(self.args.image_folder, "movie.gif"),
-            save_all=True,
-            append_images=imgs[1:],
-            duration=1,
-            loop=0,
-        )
+        # imgs[0].save(
+        #     os.path.join(self.args.image_folder, "movie.gif"),
+        #     save_all=True,
+        #     append_images=imgs[1:],
+        #     duration=1,
+        #     loop=0,
+        # )
 
     def anneal_Langevin_dynamics_inpainting(
         self, x_mod, refer_image, scorenet, sigmas, n_steps_each=100, step_lr=0.000008
