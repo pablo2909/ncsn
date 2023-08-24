@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import pathlib
 import shutil
 import sys
 import time
@@ -8,6 +9,7 @@ import traceback
 
 import numpy as np
 import torch
+import wandb
 import yaml
 from runners import *
 
@@ -133,6 +135,17 @@ def dict2namespace(config):
 
 
 def main():
+    run = wandb.init(
+        project="NCSN-yang-song",
+        entity="pablo2909",
+        settings=wandb.Settings(start_method="thread"),
+        reinit=True,
+        mode="online",
+        dir=pathlib.Path(
+            pathlib.Path.home().parent.parent,
+            "scratch/project/dd-23-57/wandb_log/wandb_log_NCSN",
+        ),
+    )
     args, config = parse_args_and_config()
     logging.info("Writing log file to {}".format(args.log))
     logging.info("Exp instance id = {}".format(os.getpid()))
